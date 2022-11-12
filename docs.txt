@@ -1,0 +1,13 @@
+User.create({
+    name: "vaisakh",
+    lastname: "b",
+    email: "vaisakh2077@gmail.com",
+    register_number: "vaisakh2077",
+    username: Date.now(),
+    qr_delay: 1,
+    smart_catching: true,
+    darkTheme: true,
+    password: "nasa",
+    type: "admin",
+    disenable: false,
+});
