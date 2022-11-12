@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LoginCover from "../assets/login-cover.jpg";
 import Stack from "@mui/material/Stack";
 import {
@@ -13,6 +13,10 @@ function Login() {
     const [loginError, setLoginError] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) window.location = "/";
+    }, []);
 
     async function handleLogin(e) {
         e.preventDefault();
@@ -30,7 +34,7 @@ function Login() {
         const data = await response.json();
         if (data.token) {
             localStorage.setItem("token", data.token);
-            window.location = "/dashboard";
+            window.location = "/";
         } else {
             setLoginError(true);
         }
