@@ -3,8 +3,8 @@ import SideMenu from "../Components/SideMenu";
 
 import Dashboard from "./Dashboard";
 import Profile from "./Profile";
-import Orders from "./Orders";
-import Rewards from "./Rewards";
+import Trade from "./Trade";
+import BuyItem from "./BuyItem";
 import AddItem from "./AddItem";
 
 function Root() {
@@ -20,8 +20,8 @@ function Root() {
             <SideMenu selected={selected} setSelected={setSelected} />
             {selected === "dashboard" ? <Dashboard /> : null}
             {selected === "profile" ? <Profile /> : null}
-            {selected === "orders" ? <Orders /> : null}
-            {selected === "rewards" ? <Rewards /> : null}
+            {selected === "trade" ? <Trade /> : null}
+            {selected === "buy item" ? <BuyItem /> : null}
             {selected === "add item" ? <AddItem /> : null}
         </div>
     );

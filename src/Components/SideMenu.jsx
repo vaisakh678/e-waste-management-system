@@ -36,7 +36,7 @@ function SideMenu({ selected, setSelected }) {
                     <div className="mb-2">
                         <SideButton
                             icon={<ShoppingCartIcon />}
-                            label="Orders"
+                            label="Trade"
                             get={selected}
                             set={setSelected}
                         />
@@ -45,7 +45,7 @@ function SideMenu({ selected, setSelected }) {
                     <div className="mb-2">
                         <SideButton
                             icon={<AccountBalanceWalletIcon />}
-                            label="Rewards"
+                            label="Buy Item"
                             get={selected}
                             set={setSelected}
                         />
