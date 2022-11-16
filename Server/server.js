@@ -9,6 +9,7 @@ const fs = require("fs");
 
 const User = require("./models/User");
 const Item = require("./models/Item");
+const Trade = require("./models/Trade");
 
 const app = express();
 app.use(cors());
@@ -51,6 +52,8 @@ app.post("/api/add-item", async (req, res) => {
         console.log("token error");
         return;
     }
+
+    console.log(decode);
     let photos = [];
     if (req.files) {
         for (const obj in req.files) {
@@ -73,6 +76,7 @@ app.post("/api/add-item", async (req, res) => {
             name: req.body.itemName.toLowerCase(),
             category: req.body.category.toLowerCase(),
             qty: req.body.qty,
+            owner: decode["username"],
             price: req.body.price,
             photos,
         });
@@ -86,12 +90,12 @@ app.post("/api/add-item", async (req, res) => {
 
 app.post("/api/search", async (req, res) => {
     const token = req.headers["x-access-token"];
-    // const decode = jwt.verify(token, SECRETE_KEY);
-    // if (!decode) {
-    //     res.json({ status: "err", err: "token error" });
-    //     console.log("token error");
-    //     return;
-    // }
+    const decode = jwt.verify(token, SECRETE_KEY);
+    if (!decode) {
+        res.json({ status: "err", err: "token error" });
+        console.log("token error");
+        return;
+    }
     try {
         console.log(req.body);
         let result;
@@ -100,6 +104,87 @@ app.post("/api/search", async (req, res) => {
         else result = await Item.find({ category: req.body.category });
         console.log(result);
         res.json({ status: "ok", result });
+    } catch (err) {
+        res.json({ status: "err" });
+        console.log(err);
+    }
+});
+
+app.post("/api/my-items", async (req, res) => {
+    const token = req.headers["x-access-token"];
+    const decode = jwt.verify(token, SECRETE_KEY);
+    if (!decode) {
+        res.json({ status: "err", err: "token error" });
+        console.log("token error");
+        return;
+    }
+    try {
+        let result = await Item.find({ owner: decode["username"] });
+        res.json({ status: "ok", result });
+        console.log(`${decode["username"]} has fetched ads list`);
+    } catch (err) {
+        res.json({ status: "err" });
+        console.log(err);
+    }
+});
+
+app.post("/api/purchase", async (req, res) => {
+    const token = req.headers["x-access-token"];
+    const decode = jwt.verify(token, SECRETE_KEY);
+    if (!decode) {
+        res.json({ status: "err", err: "token error" });
+        console.log("token error");
+        return;
+    }
+
+    try {
+        const _date = new Date();
+        let seller = await Item.findOne({ _id: "63746e83c9b88b8291e2de33" });
+        seller = seller.owner;
+        console.log(seller);
+        await Trade.create({
+            itemId: req.body.itemId,
+            purpose: req.body.purpose,
+            buyer: decode["username"],
+            date: _date,
+            seller,
+        });
+        console.log(`${decode["username"]} has purchased ${req.body.itemId}`);
+        res.json({ status: "ok" });
+    } catch (err) {
+        res.json({ status: "err" });
+        console.log(err);
+    }
+});
+
+app.post("/api/fetch-brought-items", async (req, res) => {
+    const token = req.headers["x-access-token"];
+    const decode = jwt.verify(token, SECRETE_KEY);
+    if (!decode) {
+        res.json({ status: "err", err: "token error" });
+        console.log("token error");
+        return;
+    }
+
+    try {
+        let result = [];
+        const TradeRes = await Trade.find({
+            buyer: decode["username"],
+        });
+        for (let i = 0; i < TradeRes.length; i++) {
+            let tmp = {};
+            const ItemDetaild = await Item.findOne({
+                _id: TradeRes[i]["itemId"],
+            });
+            tmp["itemName"] = ItemDetaild["name"];
+            tmp["supplier"] = TradeRes[i]["seller"];
+            const _date = new Date();
+            tmp["date"] = _date;
+            result.push(tmp);
+        }
+        console.log(result);
+
+        res.json({ result: result, status: "ok" });
     } catch (err) {
         res.json({ status: "err" });
         console.log(err);

@@ -88,6 +88,7 @@ function BuyItem() {
                             name={element["name"]}
                             qty={element["qty"]}
                             price={element["price"]}
+                            itemId={element["_id"]}
                         />
                     ))}
                 </div>

@@ -30,6 +30,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function OrderTable() {
+    const [orderList, setOrderList] = useState([]);
+
+    async function fetchBroughtItems() {
+        const response = await fetch(
+            "http://localhost:3001/api/fetch-brought-items",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "Application/json",
+                    "x-access-token": localStorage.getItem("token"),
+                },
+                body: JSON.stringify({ status: "ok" }),
+            }
+        );
+
+        const data = await response.json();
+        setOrderList(data["result"]);
+        console.log(data);
+    }
+
+    useState(() => {
+        fetchBroughtItems();
+    }, []);
+
     const [Trade, setTrade] = useState([
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
         21, 22, 23, 24, 25, 26,
@@ -63,13 +87,18 @@ function OrderTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {Trade.map((e) => (
-                            <StyledTableRow>
-                                <TableCell>{e}</TableCell>
-                                <TableCell>Apple</TableCell>
-                                <TableCell align="right">Messi</TableCell>
+                        {orderList.map((e, idx) => (
+                            <StyledTableRow key={idx}>
+                                <TableCell>{idx + 1}</TableCell>
+                                <TableCell>{e.itemName}</TableCell>
+                                <TableCell align="right">
+                                    {e.supplier}
+                                </TableCell>
                                 <TableCell align="right">7907214132</TableCell>
-                                <TableCell align="right">11/22/2022</TableCell>
+                                <TableCell align="right">
+                                    {/* {dateFormat(e.date, "dddd, mmmm dS, yyyy")} */}
+                                    {e.date}
+                                </TableCell>
                             </StyledTableRow>
                         ))}
                     </TableBody>
