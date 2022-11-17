@@ -139,7 +139,7 @@ app.post("/api/purchase", async (req, res) => {
 
     try {
         const _date = new Date();
-        let seller = await Item.findOne({ _id: "63746e83c9b88b8291e2de33" });
+        let seller = await Item.findOne({ _id: req.body.itemId });
         seller = seller.owner;
         console.log(seller);
         await Trade.create({
@@ -190,6 +190,48 @@ app.post("/api/fetch-brought-items", async (req, res) => {
         console.log(err);
     }
 });
+
+app.post("/api/fetch-sold-items", async (req, res) => {
+    const token = req.headers["x-access-token"];
+    const decode = jwt.verify(token, SECRETE_KEY);
+    if (!decode) {
+        res.json({ status: "err", err: "token error" });
+        console.log("token error");
+        return;
+    }
+    try {
+        const sold_items = await Trade.find({ seller: decode["username"] });
+        let result = [];
+        for (let i = 0; i < sold_items.length; i++) {
+            let tmp = {};
+            const ItemDetails = await Item.findOne({
+                _id: sold_items[i].itemId,
+            });
+            tmp["ItemName"] = ItemDetails["name"];
+            tmp["purpose"] = sold_items[i]["purpose"];
+            tmp["date"] = sold_items[i]["date"];
+            tmp["buyer"] = sold_items[i]["buyer"];
+            result.push(tmp);
+        }
+        res.json({ status: "ok", result });
+    } catch (err) {
+        res.json({ status: "err" });
+        console.log(err);
+    }
+});
+
+// User.create({
+//     name: "lakshmi",
+//     lastname: "s",
+//     username: "lakshmi123",
+//     email: "lakshmi@gmail.com",
+//     register_date: Date.now(),
+//     smart_catching: true,
+//     darkTheme: true,
+//     password: "123",
+//     type: "admin",
+//     disenable: false,
+// });
 
 app.listen(PORT, () => {
     console.log("server is up🚀");

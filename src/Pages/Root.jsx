@@ -6,6 +6,7 @@ import Profile from "./Profile";
 import Trade from "./Trade";
 import BuyItem from "./BuyItem";
 import AddItem from "./AddItem";
+import About from "./About";
 
 function Root() {
     useEffect(() => {
@@ -23,6 +24,7 @@ function Root() {
             {selected === "trade" ? <Trade /> : null}
             {selected === "buy item" ? <BuyItem /> : null}
             {selected === "add item" ? <AddItem /> : null}
+            {selected === "about" ? <About /> : null}
         </div>
     );
 }

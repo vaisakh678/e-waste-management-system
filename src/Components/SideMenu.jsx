@@ -6,6 +6,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import AddIcon from "@mui/icons-material/Add";
 import LogoutIcon from "@mui/icons-material/Logout";
+import InfoIcon from "@mui/icons-material/Info";
 
 function SideMenu({ selected, setSelected }) {
     return (
@@ -55,6 +56,15 @@ function SideMenu({ selected, setSelected }) {
                         <SideButton
                             icon={<AddIcon />}
                             label="Add item"
+                            get={selected}
+                            set={setSelected}
+                        />
+                    </div>
+
+                    <div className="mb-2">
+                        <SideButton
+                            icon={<InfoIcon />}
+                            label="About"
                             get={selected}
                             set={setSelected}
                         />

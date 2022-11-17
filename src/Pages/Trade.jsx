@@ -4,7 +4,7 @@ import OrderTable from "../Components/OrderTable";
 import SoldItemsTable from "../Components/SoldItemsTable";
 
 function Trade() {
-    const [tab, setTab] = useState(0);
+    const [tab, setTab] = useState(1);
     return (
         <div className=" w-5/6 h-full">
             <div className="title-height px-8 flex items-center border-b border-slate-300">

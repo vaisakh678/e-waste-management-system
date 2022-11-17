@@ -30,10 +30,30 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function SoldItemsTable() {
-    const [Trade, setTrade] = useState([
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        21, 22, 23, 24, 25, 26,
-    ]);
+    const [soldItemsList, setSoldItemsList] = useState([]);
+
+    async function fetchSoldItems() {
+        const response = await fetch(
+            "http://localhost:3001/api/fetch-sold-items",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "Application/json",
+                    "x-access-token": localStorage.getItem("token"),
+                },
+                body: JSON.stringify({ status: "ok" }),
+            }
+        );
+
+        const data = await response.json();
+        setSoldItemsList(data["result"]);
+        console.log("fetchSoldItems called");
+        console.log(data);
+    }
+
+    useState(() => {
+        fetchSoldItems();
+    }, []);
 
     return (
         <Box sx={{ height: "92%" }} className="trade-content w-full p-8">
@@ -66,15 +86,15 @@ function SoldItemsTable() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {Trade.map((e) => (
+                        {soldItemsList.map((e, idx) => (
                             <StyledTableRow>
-                                <TableCell>{e}</TableCell>
-                                <TableCell>Banana</TableCell>
-                                <TableCell align="right">Ronaldo</TableCell>
+                                <TableCell>{idx + 1}</TableCell>
+                                <TableCell>{e.ItemName}</TableCell>
+                                <TableCell align="right">{e.buyer}</TableCell>
                                 <TableCell align="right">
                                     +91 9447985590
                                 </TableCell>
-                                <TableCell align="right">11/22/2077</TableCell>
+                                <TableCell align="right">{e.purpose}</TableCell>
                                 <TableCell align="right">lost</TableCell>
                             </StyledTableRow>
                         ))}
